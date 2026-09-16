@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Local temp files
 temp/
+
+# Local private notes
+RUN_PROJECT_LOCAL.md

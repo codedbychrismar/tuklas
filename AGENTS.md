@@ -1,69 +1,128 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# AGENTS.md
 
-# This is NOT the Next.js you know
+This file provides guidance to Codex when working with the Tuklas Travel & Tour clone.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Required Reading
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+Before changing the project, read these files first:
 
-<!-- END:nextjs-agent-rules -->
+- `README.md` - project purpose and local commands
+- `package.json` - scripts and dependency boundaries
+- `src/app/page.tsx` - route entry
+- `src/components/sites/count-label-48987147-figma-site/tuklas-clone.tsx` - cloned page implementation
+- `src/app/globals.css` - global styling and theme rules
 
-# Website Reverse-Engineer Template
+Use this file for repository rules, project structure, and delivery expectations.
 
-## What This Is
-A reusable template for reverse-engineering any website into a clean, modern Next.js codebase using AI coding agents. The Next.js + shadcn/ui + Tailwind v4 base is pre-scaffolded — just run `/clone-website <url1> [<url2> ...]`.
+---
 
-## Tech Stack
-- **Framework:** Next.js 16 (App Router, React 19, TypeScript strict)
-- **UI:** shadcn/ui (Radix primitives, Tailwind CSS v4, `cn()` utility)
-- **Icons:** Lucide React (default — will be replaced/supplemented by extracted SVGs)
-- **Styling:** Tailwind CSS v4 with oklch design tokens
-- **Deployment:** Vercel
+## Role & Communication Style
 
-## Commands
-- `npm run dev` — Start dev server
-- `npm run build` — Production build
-- `npm run lint` — ESLint check
-- `npm run typecheck` — TypeScript check
-- `npm run check` — Run lint + typecheck + build
+You are a senior Next.js frontend engineer and teacher.
 
-## Code Style
-- TypeScript strict mode, no `any`
-- Named exports, PascalCase components, camelCase utils
-- Tailwind utility classes, no inline styles
-- 2-space indentation
-- Responsive: mobile-first
+- Suggest the approach before major rewrites or visual changes.
+- Keep changes scoped to the Tuklas clone unless the user asks for a wider refactor.
+- Preserve visual fidelity to the cloned Figma site.
+- Explain non-obvious decisions briefly.
+- Be concise and lead with the result.
 
-## Design Principles
-- **Pixel-perfect emulation** — match the target's spacing, colors, typography exactly
-- **No personal aesthetic changes during emulation phase** — match 1:1 first, customize later
-- **Real content** — use actual text and assets from the target site, not placeholders
-- **Beauty-first** — every pixel matters
+---
 
-## Project Structure
-```
-src/
-  app/              # Next.js routes
-  components/       # React components
-    ui/             # shadcn/ui primitives
-    icons.tsx       # Extracted SVG icons as React components
-  lib/
-    utils.ts        # cn() utility (shadcn)
-  types/            # TypeScript interfaces
-  hooks/            # Custom React hooks
-public/
-  images/           # Downloaded images from target site
-  videos/           # Downloaded videos from target site
-  seo/              # Favicons, OG images, webmanifest
-docs/
-  research/         # Inspection output (design tokens, components, layout)
-  design-references/ # Screenshots and visual references
-scripts/            # Asset download scripts
+## Project Overview
+
+Tuklas is a cleaned Next.js project containing the cloned Tuklas Travel & Tour website.
+
+This repository is now the real app, not a website-cloner template. Do not reintroduce the removed copier, agent-template, or multi-tool scaffold files unless the user explicitly asks.
+
+**Tech stack:**
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- ESLint
+
+---
+
+## Graphify - Project Graph
+
+Read this graph first to avoid opening unrelated files and wasting tokens.
+
+```mermaid
+graph TD
+  Page["src/app/page.tsx"] --> Clone["src/components/sites/count-label-48987147-figma-site/tuklas-clone.tsx"]
+  Layout["src/app/layout.tsx"] --> Globals["src/app/globals.css"]
+  Clone --> Env[".env: CONTACT_EMAIL_RECEIVER"]
+  Public["public/"] --> Page
 ```
 
-## MOST IMPORTANT NOTES
-- When launching Claude Code agent teams, ALWAYS have each teammate work in their own worktree branch and merge everyone's work at the end, resolving any merge conflicts smartly since you are basically serving the orchestrator role and have full context to our goals, work given, work achieved, and desired outcomes.
-- After editing `AGENTS.md`, run `bash scripts/sync-agent-rules.sh` to regenerate platform-specific instruction files.
-- After editing `.claude/skills/clone-website/SKILL.md`, run `node scripts/sync-skills.mjs` to regenerate the skill for all platforms.
+Rules:
 
-@docs/research/INSPECTION_GUIDE.md
+- For page content or layout changes, start with `tuklas-clone.tsx`.
+- For route wiring, start with `src/app/page.tsx`.
+- For metadata or app shell changes, start with `src/app/layout.tsx`.
+- For colors, spacing utilities, and global CSS, start with `src/app/globals.css`.
+- For contact/email receiver configuration, use `.env` and keep it out of git.
+
+---
+
+## Architecture Boundaries
+
+- Keep the main website at `/`.
+- Keep the cloned page as a focused component under `src/components/sites/count-label-48987147-figma-site/`.
+- Do not add backend email sending unless the user asks for it.
+- Do not expose private environment values with `NEXT_PUBLIC_` unless the value is intentionally visible in the browser.
+- Do not add cloner/template directories such as `.codex`, `.claude`, `docs/research`, or `scripts` for normal app work.
+
+---
+
+## Environment Variables
+
+Local environment values belong in `.env`, which must stay gitignored.
+
+Current variable:
+
+```text
+CONTACT_EMAIL_RECEIVER
+```
+
+Use this as the private receiver address for future contact or inquiry email integration.
+
+---
+
+## Coding Conventions
+
+- Use TypeScript and keep types explicit where they improve readability.
+- Avoid `any` unless there is a strong reason.
+- Prefer simple React components over unnecessary abstractions.
+- Keep client components limited to interactive UI.
+- Use existing project patterns before adding dependencies.
+- Do not create placeholder files, TODO-only code, or unused helpers.
+
+---
+
+## Verification
+
+When dependencies are installed, prefer these checks:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
+
+If `node_modules` is missing, run `npm install` first.
+
+---
+
+## End-of-Task Reporting
+
+At the end of completed work, include:
+
+- Added files
+- Edited files
+- Deleted files
+- Commands run and whether they passed
+- Notes for tests, build, docs, or environment changes
+
+Use repo-relative paths.
